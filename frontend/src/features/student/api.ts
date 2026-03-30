@@ -1,5 +1,5 @@
 import { apiRequest } from "../../lib/api";
-import type { AuthResponse } from "../auth/types";
+import { authApi } from "../auth/api";
 import type {
   ModuleSubmitResponse,
   StudentAnswerPayload,
@@ -9,11 +9,7 @@ import type {
 } from "./types";
 
 export const studentApi = {
-  login: (payload: { loginId: string; password: string }) =>
-    apiRequest<AuthResponse>("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  login: (payload: { loginId: string; password: string }) => authApi.login(payload),
   getAssignments: (token: string, studentId: number) =>
     apiRequest<StudentAssignment[]>(`/api/student/exams?studentId=${studentId}`, { token }),
   getAssignmentDetail: (token: string, assignmentId: number) =>

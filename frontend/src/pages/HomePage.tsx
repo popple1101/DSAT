@@ -67,11 +67,14 @@ export function HomePage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <ButtonLink to="/student" className="min-w-[148px]">
-                학생 포털 입장
+              <ButtonLink to="/login?role=student" className="min-w-[148px]">
+                학생 로그인
               </ButtonLink>
-              <ButtonLink to="/admin" tone="secondary" className="min-w-[148px]">
-                관리자 콘솔
+              <ButtonLink to="/login?role=admin" tone="secondary" className="min-w-[148px]">
+                관리자 로그인
+              </ButtonLink>
+              <ButtonLink to="/signup" tone="ghost" className="min-w-[148px]">
+                학생 회원가입
               </ButtonLink>
             </div>
 
@@ -183,9 +186,12 @@ export function HomePage() {
             </h2>
           </div>
           <div className="flex flex-wrap gap-3">
-            <ButtonLink to="/student">학생 포털</ButtonLink>
-            <ButtonLink to="/admin" tone="ghost">
-              관리자 포털
+            <ButtonLink to="/login?role=student">학생 로그인</ButtonLink>
+            <ButtonLink to="/login?role=admin" tone="ghost">
+              관리자 로그인
+            </ButtonLink>
+            <ButtonLink to="/signup" tone="secondary">
+              학생 회원가입
             </ButtonLink>
           </div>
         </div>

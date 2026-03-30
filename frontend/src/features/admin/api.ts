@@ -1,13 +1,9 @@
 import { apiRequest } from "../../lib/api";
-import type { AuthResponse } from "../auth/types";
+import { authApi } from "../auth/api";
 import type { AssignmentPayload, Exam, ExamPayload, LoginPayload, Question, QuestionPayload, Student } from "./types";
 
 export const adminApi = {
-  login: (payload: LoginPayload) =>
-    apiRequest<AuthResponse>("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  login: (payload: LoginPayload) => authApi.login(payload),
   getQuestions: (token: string) => apiRequest<Question[]>("/api/admin/questions", { token }),
   createQuestion: (token: string, payload: QuestionPayload) =>
     apiRequest<Question>("/api/admin/questions", {
