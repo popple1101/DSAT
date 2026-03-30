@@ -102,9 +102,9 @@ els.submitModule.addEventListener("click", async () => {
       return;
     }
 
-    toast(`최종 제출 완료. 점수 API 확인 가능`);
+    toast(`최종 제출 완료. 결과표로 이동합니다.`);
     await loadAssignments();
-    await loadAssignmentDetail(state.currentAssignmentId);
+    window.location.href = `/result.html?assignmentId=${state.currentAssignmentId}`;
   } catch (error) {
     toast(error.message, true);
   }
