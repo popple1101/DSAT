@@ -41,6 +41,16 @@ public class User {
         this.active = active;
     }
 
+    public static User createStudent(String loginId, String passwordHash, String name) {
+        return User.builder()
+                .loginId(loginId)
+                .passwordHash(passwordHash)
+                .name(name)
+                .role(UserRole.STUDENT)
+                .active(true)
+                .build();
+    }
+
     public void changePassword(String passwordHash) {
         this.passwordHash = passwordHash;
     }
