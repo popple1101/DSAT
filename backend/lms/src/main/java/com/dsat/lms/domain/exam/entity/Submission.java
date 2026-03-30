@@ -109,8 +109,10 @@ public class Submission {
     }
 
     public void startModule1() {
+        if (this.module1StartedAt == null) {
+            this.module1StartedAt = LocalDateTime.now();
+        }
         this.status = SubmissionStatus.MODULE_1_IN_PROGRESS;
-        this.module1StartedAt = LocalDateTime.now();
     }
 
     public void submitModule1(RouteType routeType, int module1DurationSeconds, int module1CorrectCount) {
@@ -122,8 +124,10 @@ public class Submission {
     }
 
     public void startModule2() {
+        if (this.module2StartedAt == null) {
+            this.module2StartedAt = LocalDateTime.now();
+        }
         this.status = SubmissionStatus.MODULE_2_IN_PROGRESS;
-        this.module2StartedAt = LocalDateTime.now();
     }
 
     public void submitFinal(int module2DurationSeconds, int module2CorrectCount, int sectionScore) {
