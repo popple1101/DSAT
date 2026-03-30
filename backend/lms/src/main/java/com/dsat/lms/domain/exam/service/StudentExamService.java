@@ -10,11 +10,13 @@ import com.dsat.lms.domain.exam.entity.ExamAssignment;
 import com.dsat.lms.domain.exam.entity.ExamQuestion;
 import com.dsat.lms.domain.exam.entity.ModuleType;
 import com.dsat.lms.domain.exam.entity.RouteType;
+import com.dsat.lms.domain.exam.entity.ScoreTable;
 import com.dsat.lms.domain.exam.entity.Submission;
 import com.dsat.lms.domain.exam.entity.SubmissionAnswer;
 import com.dsat.lms.domain.exam.entity.SubmissionStatus;
 import com.dsat.lms.domain.exam.repository.ExamAssignmentRepository;
 import com.dsat.lms.domain.exam.repository.ExamQuestionRepository;
+import com.dsat.lms.domain.exam.repository.ScoreTableRepository;
 import com.dsat.lms.domain.exam.repository.SubmissionAnswerRepository;
 import com.dsat.lms.domain.exam.repository.SubmissionRepository;
 import com.dsat.lms.domain.user.entity.User;
@@ -39,6 +41,7 @@ public class StudentExamService {
     private final SubmissionRepository submissionRepository;
     private final ExamQuestionRepository examQuestionRepository;
     private final SubmissionAnswerRepository submissionAnswerRepository;
+    private final ScoreTableRepository scoreTableRepository;
     private final UserRepository userRepository;
 
     public List<StudentAssignmentSummaryResponse> getAssignments(Long studentId) {
@@ -176,7 +179,17 @@ public class StudentExamService {
                 .filter(answer -> Boolean.TRUE.equals(answer.getCorrect()))
                 .count();
 
-        submission.submitFinal(request.durationSeconds(), correctCount, 0);
+        int module1CorrectCount = submission.getModule1CorrectCount() == null ? 0 : submission.getModule1CorrectCount();
+        ScoreTable scoreTable = scoreTableRepository
+                .findByTableIdAndRouteTypeAndModule1CorrectCountAndModule2CorrectCount(
+                        submission.getAssignment().getExam().getScoreTableId(),
+                        routeType,
+                        module1CorrectCount,
+                        correctCount
+                )
+                .orElseThrow(() -> new IllegalArgumentException("점수표를 찾을 수 없습니다."));
+
+        submission.submitFinal(request.durationSeconds(), correctCount, scoreTable.getSectionScore());
 
         return ModuleSubmitResponse.from(submission);
     }

@@ -9,7 +9,8 @@ public record ModuleSubmitResponse(
         SubmissionStatus submissionStatus,
         RouteType routeType,
         Integer module1CorrectCount,
-        Integer module2CorrectCount
+        Integer module2CorrectCount,
+        Integer sectionScore
 ) {
     public static ModuleSubmitResponse from(Submission submission) {
         return new ModuleSubmitResponse(
@@ -18,6 +19,8 @@ public record ModuleSubmitResponse(
                 submission.getRouteType(),
                 submission.getModule1CorrectCount(),
                 submission.getModule2CorrectCount()
+                ,
+                submission.getSectionScore()
         );
     }
 }
