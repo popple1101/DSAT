@@ -1,21 +1,26 @@
 import { Outlet, NavLink } from "react-router-dom";
+import { BrandMark } from "./BrandMark";
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
   `rounded-full px-4 py-2 text-sm font-semibold transition ${
-    isActive ? "bg-slate-900 text-white" : "bg-white/70 text-slate-700 hover:bg-white"
+    isActive
+      ? "bg-[var(--color-brand-navy)] text-white shadow-[var(--shadow-brand)]"
+      : "bg-white/78 text-[var(--color-brand-navy)] hover:bg-white"
   }`;
 
 export function RootLayout() {
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#eef2ff_0%,#f8fafc_100%)] text-slate-900">
-      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 md:px-6">
-        <header className="mb-6 flex flex-col gap-4 rounded-[28px] border border-slate-200/80 bg-white/85 px-6 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
-              DSAT Frontend
-            </p>
-            <h1 className="text-3xl font-black tracking-tight">PC/Tablet Ready LMS</h1>
-          </div>
+    <div className="min-h-screen text-[var(--color-text)]">
+      <div className="mx-auto flex min-h-screen max-w-[1440px] flex-col px-4 py-6 md:px-6 lg:px-8">
+        <header
+          className="mb-6 flex flex-col gap-4 rounded-[34px] border px-5 py-5 shadow-[var(--shadow-soft)] backdrop-blur md:flex-row md:items-center md:justify-between"
+          style={{
+            borderColor: "var(--color-line)",
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(247,249,253,0.92) 58%, rgba(251,247,239,0.84))",
+          }}
+        >
+          <BrandMark compact />
           <nav className="flex flex-wrap gap-2">
             <NavLink to="/" className={navClass} end>
               홈
