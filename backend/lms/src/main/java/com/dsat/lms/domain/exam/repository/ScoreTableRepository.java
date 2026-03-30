@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ScoreTableRepository extends JpaRepository<ScoreTable, Long> {
+    boolean existsByTableId(String tableId);
+
     Optional<ScoreTable> findByTableIdAndRouteTypeAndModule1CorrectCountAndModule2CorrectCount(
             String tableId,
             RouteType routeType,
