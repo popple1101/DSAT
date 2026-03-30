@@ -39,6 +39,7 @@ backend/*.class
 # ========================
 frontend/node_modules/
 frontend/build/
+frontend/dist/
 
 # ========================
 # Database
