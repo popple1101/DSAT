@@ -32,6 +32,7 @@ backend/*.class
 
 # Gradle wrapper (유지해야 함)
 !backend/gradle/wrapper/gradle-wrapper.jar
+.gradle-local/
 
 # ========================
 # Node / React
