@@ -27,22 +27,22 @@ export function SignupPage() {
   });
 
   return (
-    <section className="grid min-h-[calc(100vh-140px)] gap-6 lg:grid-cols-[0.88fr_1.12fr]">
+    <section className="grid min-h-[calc(100vh-140px)] gap-5 lg:grid-cols-[0.88fr_1.12fr]">
       <div
-        className="rounded-[38px] border px-6 py-7 shadow-[var(--shadow-soft)]"
+        className="order-2 rounded-[34px] border px-5 py-6 shadow-[var(--shadow-soft)] lg:order-1 lg:px-6 lg:py-7"
         style={{
           borderColor: "var(--color-line)",
           background:
             "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(247,249,253,0.92) 58%, rgba(251,247,239,0.82))",
         }}
       >
-        <div className="flex h-full flex-col justify-between gap-8">
+        <div className="flex h-full flex-col justify-between gap-6">
           <BrandMark />
           <div className="space-y-4">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-brand-blue)]">
               Signup
             </p>
-            <h1 className="text-4xl font-black leading-tight tracking-tight text-[var(--color-ink)] md:text-5xl">
+            <h1 className="text-3xl font-black leading-tight tracking-tight text-[var(--color-ink)] md:text-4xl xl:text-5xl">
               학생 계정을 먼저 만들고
               <span className="block text-[var(--color-brand-navy)]">DSAT 포털에 입장합니다.</span>
             </h1>
@@ -71,14 +71,14 @@ export function SignupPage() {
       </div>
 
       <div
-        className="rounded-[38px] border px-6 py-7 shadow-[var(--shadow-soft)]"
+        className="order-1 rounded-[34px] border px-5 py-6 shadow-[var(--shadow-soft)] lg:order-2 lg:px-6 lg:py-7"
         style={{
           borderColor: "var(--color-line)",
           background:
             "linear-gradient(145deg, rgba(16,38,79,0.96), rgba(23,53,111,0.92) 48%, rgba(183,122,60,0.88) 120%)",
         }}
       >
-        <div className="mx-auto flex h-full max-w-xl flex-col justify-center gap-6 text-white">
+        <div className="mx-auto flex h-full max-w-xl flex-col justify-center gap-5 text-white">
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/62">Create account</p>
             <h2 className="text-3xl font-black tracking-tight md:text-4xl">LML DSAT Student Signup</h2>
@@ -151,7 +151,7 @@ export function SignupPage() {
             </button>
           </form>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
             <Link to="/login?role=student" className="text-sm font-semibold text-white">
               이미 계정이 있다면 로그인
             </Link>

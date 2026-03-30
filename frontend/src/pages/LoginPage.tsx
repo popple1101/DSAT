@@ -40,22 +40,22 @@ export function LoginPage() {
   });
 
   return (
-    <section className="grid min-h-[calc(100vh-140px)] gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+    <section className="grid min-h-[calc(100vh-140px)] gap-5 lg:grid-cols-[0.95fr_1.05fr]">
       <div
-        className="rounded-[38px] border px-6 py-7 shadow-[var(--shadow-soft)]"
+        className="order-2 rounded-[34px] border px-5 py-6 shadow-[var(--shadow-soft)] lg:order-1 lg:px-6 lg:py-7"
         style={{
           borderColor: "var(--color-line)",
           background:
             "linear-gradient(145deg, rgba(16,38,79,0.96), rgba(23,53,111,0.92) 48%, rgba(183,122,60,0.88) 120%)",
         }}
       >
-        <div className="flex h-full flex-col justify-between gap-8 text-white">
+        <div className="flex h-full flex-col justify-between gap-6 text-white">
           <BrandMark />
           <div className="space-y-4">
             <p className="text-sm font-semibold uppercase tracking-[0.34em] text-white/68">
               LML DSAT Portal
             </p>
-            <h2 className="text-4xl font-black leading-tight tracking-tight md:text-5xl">
+            <h2 className="text-3xl font-black leading-tight tracking-tight md:text-4xl xl:text-5xl">
               브랜드는 LML,
               <span className="block text-[var(--color-brand-gold-soft)]">시스템은 DSAT</span>
             </h2>
@@ -64,34 +64,28 @@ export function LoginPage() {
               이어지는 DSAT 진입 화면입니다.
             </p>
           </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            <div
-              className="rounded-[24px] border px-4 py-4"
-              style={{ borderColor: "rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.08)" }}
-            >
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-white/58">Student</p>
-              <p className="mt-2 text-sm leading-6 text-white/88">태블릿 우선 시험 응시와 결과 확인에 맞춘 학생 포털</p>
-            </div>
-            <div
-              className="rounded-[24px] border px-4 py-4"
-              style={{ borderColor: "rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.08)" }}
-            >
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-white/58">Admin</p>
-              <p className="mt-2 text-sm leading-6 text-white/88">문제 등록, 시험 생성, 학생 배정을 위한 운영 콘솔</p>
-            </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <InfoTile
+              title="Student"
+              body="태블릿 우선 시험 응시와 결과 확인에 맞춘 학생 포털"
+            />
+            <InfoTile
+              title="Admin"
+              body="문제 등록, 시험 생성, 학생 배정을 위한 운영 콘솔"
+            />
           </div>
         </div>
       </div>
 
       <div
-        className="rounded-[38px] border px-6 py-7 shadow-[var(--shadow-soft)]"
+        className="order-1 rounded-[34px] border px-5 py-6 shadow-[var(--shadow-soft)] lg:order-2 lg:px-6 lg:py-7"
         style={{
           borderColor: "var(--color-line)",
           background:
             "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(247,249,253,0.92) 58%, rgba(251,247,239,0.82))",
         }}
       >
-        <div className="mx-auto flex h-full max-w-xl flex-col justify-center gap-6">
+        <div className="mx-auto flex h-full max-w-xl flex-col justify-center gap-5">
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-brand-blue)]">
               Login
@@ -106,10 +100,10 @@ export function LoginPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="grid gap-2 sm:grid-cols-2">
             <button
               type="button"
-              className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+              className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${
                 role === "student"
                   ? "bg-[var(--color-brand-navy)] text-white"
                   : "bg-white text-[var(--color-brand-navy)] ring-1 ring-[var(--color-line)]"
@@ -123,7 +117,7 @@ export function LoginPage() {
             </button>
             <button
               type="button"
-              className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+              className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${
                 role === "admin"
                   ? "bg-[var(--color-brand-navy)] text-white"
                   : "bg-white text-[var(--color-brand-navy)] ring-1 ring-[var(--color-line)]"
@@ -174,11 +168,11 @@ export function LoginPage() {
             </button>
           </form>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
             <Link to="/" className="text-sm font-semibold text-[var(--color-brand-navy)]">
               홈으로 돌아가기
             </Link>
-            <ButtonLink to="/signup" tone="ghost">
+            <ButtonLink to="/signup" tone="ghost" className="sm:w-auto">
               학생 회원가입
             </ButtonLink>
           </div>
@@ -194,5 +188,17 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <span>{label}</span>
       {children}
     </label>
+  );
+}
+
+function InfoTile({ title, body }: { title: string; body: string }) {
+  return (
+    <div
+      className="rounded-[24px] border px-4 py-4"
+      style={{ borderColor: "rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.08)" }}
+    >
+      <p className="text-xs font-semibold uppercase tracking-[0.26em] text-white/58">{title}</p>
+      <p className="mt-2 text-sm leading-6 text-white/88">{body}</p>
+    </div>
   );
 }

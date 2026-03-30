@@ -146,7 +146,7 @@ export function StudentPage() {
           </div>
         }
       >
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {summaryCards.map((card) => (
             <div
               key={card.label}
@@ -192,7 +192,10 @@ export function StudentPage() {
                 <AssignmentButton
                   key={assignment.assignmentId}
                   assignment={assignment}
-                  active={currentAssignmentId === assignment.assignmentId || (!currentAssignmentId && activeAssignment?.assignmentId === assignment.assignmentId)}
+                  active={
+                    currentAssignmentId === assignment.assignmentId ||
+                    (!currentAssignmentId && activeAssignment?.assignmentId === assignment.assignmentId)
+                  }
                   onClick={() => setCurrentAssignmentId(assignment.assignmentId)}
                 />
               ))
@@ -226,7 +229,7 @@ export function StudentPage() {
                   ]}
                 />
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="grid gap-2 sm:grid-cols-3">
                 <ActionButton
                   label="Module 1 시작"
                   onClick={() => startModule1Mutation.mutate()}
@@ -259,14 +262,14 @@ export function StudentPage() {
         {detailState?.questions.length ? (
           <div className="space-y-5">
             <div
-              className="rounded-[28px] border px-5 py-5 shadow-sm"
+              className="rounded-[28px] border px-4 py-5 shadow-sm md:px-5"
               style={{
                 borderColor: "var(--color-line)",
                 background:
                   "linear-gradient(135deg, rgba(16,38,79,0.98), rgba(23,53,111,0.92) 60%, rgba(45,91,223,0.88))",
               }}
             >
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                 <div className="text-white">
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/56">Exam Mode</p>
                   <h3 className="mt-2 text-2xl font-black tracking-tight">
@@ -284,7 +287,7 @@ export function StudentPage() {
               </div>
             </div>
 
-            <div className="grid gap-3 md:grid-cols-4">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {detailState.questions.map((question) => (
                 <button
                   key={`nav-${question.questionId}`}
@@ -311,45 +314,45 @@ export function StudentPage() {
             </div>
 
             <div className="grid gap-4">
-            {detailState.questions.map((question) => (
-              <article
-                key={question.questionId}
-                className="grid gap-4 rounded-[32px] border px-5 py-5 shadow-sm md:grid-cols-[1.08fr_0.92fr]"
-                style={{
-                  borderColor: "var(--color-line)",
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,249,253,0.88))",
-                }}
-              >
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">
-                      {detailState.currentModuleType} / {detailState.currentRouteType}
-                    </p>
-                    <h4 className="mt-2 text-xl font-black tracking-tight text-[var(--color-ink)]">
-                      {question.questionOrder}. {question.title}
-                    </h4>
-                  </div>
-
-                  {question.passageText ? (
-                    <div
-                      className="rounded-[22px] border px-4 py-4 text-sm leading-7 whitespace-pre-wrap"
-                      style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.82)" }}
-                    >
-                      {question.passageText}
+              {detailState.questions.map((question) => (
+                <article
+                  key={question.questionId}
+                  className="grid gap-4 rounded-[28px] border px-4 py-4 shadow-sm md:px-5 md:py-5 lg:grid-cols-[1.08fr_0.92fr]"
+                  style={{
+                    borderColor: "var(--color-line)",
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,249,253,0.88))",
+                  }}
+                >
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">
+                        {detailState.currentModuleType} / {detailState.currentRouteType}
+                      </p>
+                      <h4 className="mt-2 text-lg font-black tracking-tight text-[var(--color-ink)] md:text-xl">
+                        {question.questionOrder}. {question.title}
+                      </h4>
                     </div>
-                  ) : null}
 
-                  {question.assetImagePath ? (
-                    <div
-                      className="rounded-[22px] border border-dashed px-4 py-8 text-center text-sm text-[var(--color-text-soft)]"
-                      style={{ borderColor: "var(--color-line-strong)", background: "rgba(255,255,255,0.72)" }}
-                    >
-                      자료 이미지 경로: {question.assetImagePath}
-                    </div>
-                  ) : null}
+                    {question.passageText ? (
+                      <div
+                        className="rounded-[20px] border px-4 py-4 text-sm leading-7 whitespace-pre-wrap"
+                        style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.82)" }}
+                      >
+                        {question.passageText}
+                      </div>
+                    ) : null}
+
+                    {question.assetImagePath ? (
+                      <div
+                        className="rounded-[20px] border border-dashed px-4 py-8 text-center text-sm text-[var(--color-text-soft)]"
+                        style={{ borderColor: "var(--color-line-strong)", background: "rgba(255,255,255,0.72)" }}
+                      >
+                        자료 이미지 경로: {question.assetImagePath}
+                      </div>
+                    ) : null}
 
                     <section
-                      className="rounded-[24px] border px-4 py-4"
+                      className="rounded-[22px] border px-4 py-4"
                       style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.84)" }}
                     >
                       <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">
@@ -361,62 +364,62 @@ export function StudentPage() {
                     </section>
                   </div>
 
-                <div className="grid gap-3 self-start">
-                  <div
-                    className="rounded-[24px] border px-4 py-4"
-                    style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.82)" }}
-                  >
-                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">
-                      Choices
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[var(--color-text-soft)]">
-                      정답을 고르면 자동 저장됩니다.
-                    </p>
-                  </div>
-                  {(
-                    [
-                      ["A", question.choiceA],
-                      ["B", question.choiceB],
-                      ["C", question.choiceC],
-                      ["D", question.choiceD],
-                    ] as const
-                  ).map(([choice, text]) => {
-                    const active = question.selectedAnswer === choice;
-                    return (
-                      <button
-                        key={choice}
-                        type="button"
-                        className={`rounded-[22px] border px-4 py-4 text-left text-base font-semibold transition ${
-                          active
-                            ? "border-emerald-300 bg-emerald-50 text-emerald-900"
-                            : "bg-white text-[var(--color-text)] hover:bg-slate-50"
-                        }`}
-                        style={{
-                          borderColor: active ? undefined : "var(--color-line)",
-                        }}
-                        onClick={() =>
-                          answerMutation.mutate({
-                            questionId: question.questionId,
-                            selectedAnswer: choice,
-                          })
-                        }
-                      >
-                        <span
-                          className={`mr-3 inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-black ${
+                  <div className="grid gap-3 self-start">
+                    <div
+                      className="rounded-[22px] border px-4 py-4"
+                      style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.82)" }}
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">
+                        Choices
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-[var(--color-text-soft)]">
+                        정답을 고르면 자동 저장됩니다.
+                      </p>
+                    </div>
+                    {(
+                      [
+                        ["A", question.choiceA],
+                        ["B", question.choiceB],
+                        ["C", question.choiceC],
+                        ["D", question.choiceD],
+                      ] as const
+                    ).map(([choice, text]) => {
+                      const active = question.selectedAnswer === choice;
+                      return (
+                        <button
+                          key={choice}
+                          type="button"
+                          className={`rounded-[20px] border px-4 py-4 text-left text-sm font-semibold transition md:text-base ${
                             active
-                              ? "bg-emerald-100 text-emerald-900"
-                              : "bg-[var(--color-brand-cream)] text-[var(--color-brand-navy)]"
+                              ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+                              : "bg-white text-[var(--color-text)] hover:bg-slate-50"
                           }`}
+                          style={{
+                            borderColor: active ? undefined : "var(--color-line)",
+                          }}
+                          onClick={() =>
+                            answerMutation.mutate({
+                              questionId: question.questionId,
+                              selectedAnswer: choice,
+                            })
+                          }
                         >
-                          {choice}
-                        </span>
-                        {text}
-                      </button>
-                    );
-                  })}
-                </div>
-              </article>
-            ))}
+                          <span
+                            className={`mr-3 inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-black ${
+                              active
+                                ? "bg-emerald-100 text-emerald-900"
+                                : "bg-[var(--color-brand-cream)] text-[var(--color-brand-navy)]"
+                            }`}
+                          >
+                            {choice}
+                          </span>
+                          {text}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         ) : (

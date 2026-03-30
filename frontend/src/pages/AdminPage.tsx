@@ -159,7 +159,7 @@ export function AdminPage() {
           </div>
         }
       >
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {overviewCards.map((card) => (
             <OverviewCard key={card.label} {...card} />
           ))}
@@ -212,7 +212,7 @@ export function AdminPage() {
                 onChange={(event) => updateQuestionForm("questionText", event.target.value)}
               />
             </Field>
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               <Field label="선택지 A">
                 <input className={inputClass} value={questionForm.choiceA} onChange={(e) => updateQuestionForm("choiceA", e.target.value)} />
               </Field>
@@ -326,7 +326,7 @@ export function AdminPage() {
               {questionLinks.map((link, index) => (
                 <div
                   key={`${index}-${link.questionId}`}
-                  className="grid gap-3 rounded-[24px] border px-4 py-4 md:grid-cols-[2fr_1fr_1fr_1fr_auto]"
+                  className="grid gap-3 rounded-[24px] border px-4 py-4 md:grid-cols-2 xl:grid-cols-[2fr_1fr_1fr_1fr_auto]"
                   style={{
                     borderColor: "var(--color-line)",
                     background: "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,249,253,0.88))",
@@ -378,7 +378,7 @@ export function AdminPage() {
                   </Field>
                   <button
                     type="button"
-                    className="mt-6 rounded-full bg-rose-100 px-4 py-3 text-sm font-bold text-rose-700"
+                    className="rounded-full bg-rose-100 px-4 py-3 text-sm font-bold text-rose-700 xl:mt-6"
                     onClick={() => removeLink(index)}
                   >
                     삭제
@@ -387,7 +387,7 @@ export function AdminPage() {
               ))}
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
                 className={ghostButtonClass}
@@ -454,7 +454,7 @@ export function AdminPage() {
             </button>
           </form>
 
-          <div className="mt-5 grid gap-3">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
             <MiniStat
               label="시험 세트"
               value={`${examsQuery.data?.length ?? 0}개`}
