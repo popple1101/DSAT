@@ -253,15 +253,68 @@ export function StudentPage() {
       </section>
 
       <Card
-        title="시험 화면 미리보기"
-        description="실제 시험 응시 전, 선택한 시험의 문항을 태블릿 친화적인 카드 구조로 바로 확인할 수 있습니다."
+        title="시험 응시 화면"
+        description="지문, 자료, 질문, 선택지를 집중형 레이아웃으로 분리해 태블릿에서 바로 응시할 수 있는 화면 구조로 정리했습니다."
       >
         {detailState?.questions.length ? (
-          <div className="grid gap-4">
+          <div className="space-y-5">
+            <div
+              className="rounded-[28px] border px-5 py-5 shadow-sm"
+              style={{
+                borderColor: "var(--color-line)",
+                background:
+                  "linear-gradient(135deg, rgba(16,38,79,0.98), rgba(23,53,111,0.92) 60%, rgba(45,91,223,0.88))",
+              }}
+            >
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="text-white">
+                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/56">Exam Mode</p>
+                  <h3 className="mt-2 text-2xl font-black tracking-tight">
+                    {detailState.examTitle} / {detailState.currentModuleType}
+                  </h3>
+                  <p className="mt-2 text-sm leading-7 text-white/74">
+                    현재 트랙은 {detailState.currentRouteType}이며, 선택한 답안은 즉시 저장됩니다.
+                  </p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <ExamStat label="현재 문항" value={`${detailState.questions.length}개`} />
+                  <ExamStat label="Module 1 시간" value={formatSeconds(detailState.module1DurationSeconds ?? 0)} />
+                  <ExamStat label="Module 2 시간" value={formatSeconds(detailState.module2DurationSeconds ?? 0)} />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-4">
+              {detailState.questions.map((question) => (
+                <button
+                  key={`nav-${question.questionId}`}
+                  type="button"
+                  className="rounded-[20px] border px-4 py-3 text-left transition hover:-translate-y-0.5"
+                  style={{
+                    borderColor: question.selectedAnswer ? "rgba(16,185,129,0.34)" : "var(--color-line)",
+                    background: question.selectedAnswer
+                      ? "linear-gradient(180deg, rgba(236,253,245,0.95), rgba(209,250,229,0.88))"
+                      : "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,249,253,0.88))",
+                  }}
+                >
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-brand-blue)]">
+                    Q{question.questionOrder}
+                  </p>
+                  <p className="mt-2 line-clamp-2 text-sm font-semibold leading-6 text-[var(--color-text)]">
+                    {question.title}
+                  </p>
+                  <p className="mt-2 text-xs text-[var(--color-text-soft)]">
+                    {question.selectedAnswer ? `선택 완료: ${question.selectedAnswer}` : "미응답"}
+                  </p>
+                </button>
+              ))}
+            </div>
+
+            <div className="grid gap-4">
             {detailState.questions.map((question) => (
               <article
                 key={question.questionId}
-                className="grid gap-4 rounded-[28px] border px-5 py-5 shadow-sm md:grid-cols-[1.08fr_0.92fr]"
+                className="grid gap-4 rounded-[32px] border px-5 py-5 shadow-sm md:grid-cols-[1.08fr_0.92fr]"
                 style={{
                   borderColor: "var(--color-line)",
                   background: "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,249,253,0.88))",
@@ -295,15 +348,31 @@ export function StudentPage() {
                     </div>
                   ) : null}
 
-                  <div
-                    className="rounded-[22px] border px-4 py-4 text-sm font-semibold leading-7 text-[var(--color-ink)]"
-                    style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.82)" }}
-                  >
-                    {question.questionText}
+                    <section
+                      className="rounded-[24px] border px-4 py-4"
+                      style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.84)" }}
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">
+                        Question
+                      </p>
+                      <div className="mt-3 text-sm font-semibold leading-7 text-[var(--color-ink)]">
+                        {question.questionText}
+                      </div>
+                    </section>
                   </div>
-                </div>
 
                 <div className="grid gap-3 self-start">
+                  <div
+                    className="rounded-[24px] border px-4 py-4"
+                    style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.82)" }}
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">
+                      Choices
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-[var(--color-text-soft)]">
+                      정답을 고르면 자동 저장됩니다.
+                    </p>
+                  </div>
                   {(
                     [
                       ["A", question.choiceA],
@@ -348,6 +417,7 @@ export function StudentPage() {
                 </div>
               </article>
             ))}
+            </div>
           </div>
         ) : (
           <EmptyState message="시험을 선택하고 모듈을 시작하면 여기에 문항이 표시됩니다." />
@@ -443,6 +513,18 @@ function StatusPanel({ title, lines }: { title: string; lines: string[] }) {
           <p key={line}>{line}</p>
         ))}
       </div>
+    </div>
+  );
+}
+
+function ExamStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div
+      className="rounded-[20px] border px-4 py-4 text-white"
+      style={{ borderColor: "rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.08)" }}
+    >
+      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-white/58">{label}</p>
+      <p className="mt-2 text-lg font-black">{value}</p>
     </div>
   );
 }
