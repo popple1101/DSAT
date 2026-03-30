@@ -17,17 +17,25 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.findByLoginId("superadmin").isEmpty()) {
-            User user = User.builder()
-                    .loginId("superadmin")
-                    .passwordHash(passwordEncoder.encode("1234"))
-                    .name("최고관리자")
-                    .role(UserRole.SUPER_ADMIN)
-                    .active(true)
-                    .build();
+        createUserIfMissing("superadmin", "1234", "최고관리자", UserRole.SUPER_ADMIN);
+        createUserIfMissing("manager", "1234", "운영관리자", UserRole.ADMIN_MANAGER);
+        createUserIfMissing("teacher", "1234", "강사관리자", UserRole.ADMIN_TEACHER);
+    }
 
-            userRepository.save(user);
-            System.out.println(">>> superadmin 계정 생성 완료");
+    private void createUserIfMissing(String loginId, String password, String name, UserRole role) {
+        if (userRepository.findByLoginId(loginId).isPresent()) {
+            return;
         }
+
+        User user = User.builder()
+                .loginId(loginId)
+                .passwordHash(passwordEncoder.encode(password))
+                .name(name)
+                .role(role)
+                .active(true)
+                .build();
+
+        userRepository.save(user);
+        System.out.println(">>> " + loginId + " 계정 생성 완료");
     }
 }

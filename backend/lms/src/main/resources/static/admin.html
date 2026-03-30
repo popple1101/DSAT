@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSAT Admin</title>
+    <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+<div class="page">
+    <header class="hero">
+        <div>
+            <p class="eyebrow">DSAT Admin</p>
+            <h1>레벨테스트 운영 콘솔</h1>
+            <p class="muted">문제 등록, 시험 세트 생성, 학생 배정을 한 화면에서 연결합니다.</p>
+        </div>
+        <div class="hero-actions">
+            <span id="login-status" class="badge">로그인 전</span>
+            <button id="refresh-all" class="ghost-button" type="button">전체 새로고침</button>
+        </div>
+    </header>
+
+    <main class="grid">
+        <section class="card">
+            <h2>관리자 로그인</h2>
+            <form id="login-form" class="stack">
+                <label>
+                    로그인 아이디
+                    <input name="loginId" placeholder="manager" required>
+                </label>
+                <label>
+                    비밀번호
+                    <input name="password" type="password" placeholder="1234" required>
+                </label>
+                <button type="submit">로그인</button>
+            </form>
+            <p class="hint">데모 계정: `superadmin / 1234`, `manager / 1234`, `teacher / 1234`</p>
+        </section>
+
+        <section class="card">
+            <h2>문제 등록</h2>
+            <form id="question-form" class="stack">
+                <label>문제 제목<input name="title" placeholder="Module 1 Question 1" required></label>
+                <label>지문 텍스트<textarea name="passageText" rows="4" placeholder="지문이 없으면 비워둘 수 있습니다."></textarea></label>
+                <label>자료 이미지 경로<input name="assetImagePath" placeholder="/assets/questions/q1-chart.png"></label>
+                <label>질문 텍스트<textarea name="questionText" rows="3" required></textarea></label>
+                <label>선택지 A<input name="choiceA" required></label>
+                <label>선택지 B<input name="choiceB" required></label>
+                <label>선택지 C<input name="choiceC" required></label>
+                <label>선택지 D<input name="choiceD" required></label>
+                <label>정답
+                    <select name="correctAnswer" required>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </label>
+                <button type="submit">문제 저장</button>
+            </form>
+        </section>
+
+        <section class="card span-2">
+            <div class="section-head">
+                <h2>등록된 문제</h2>
+                <button id="load-questions" class="ghost-button" type="button">문제 목록 불러오기</button>
+            </div>
+            <div id="question-list" class="list empty">등록된 문제가 없습니다.</div>
+        </section>
+
+        <section class="card span-2">
+            <h2>시험 세트 생성</h2>
+            <form id="exam-form" class="stack">
+                <div class="inline-grid">
+                    <label>시험명<input name="title" placeholder="DSAT Level Test" required></label>
+                    <label>버전명<input name="versionName" placeholder="v1" required></label>
+                    <label>점수표 ID<input name="scoreTableId" value="RW_DEFAULT_V1" required></label>
+                </div>
+                <div class="section-head">
+                    <h3>시험에 포함할 문제</h3>
+                    <button id="add-link-row" class="ghost-button" type="button">문항 연결 추가</button>
+                </div>
+                <div id="question-link-rows" class="stack"></div>
+                <button type="submit">시험 세트 저장</button>
+            </form>
+        </section>
+
+        <section class="card span-2">
+            <div class="section-head">
+                <h2>시험 세트 목록</h2>
+                <button id="load-exams" class="ghost-button" type="button">시험 목록 불러오기</button>
+            </div>
+            <div id="exam-list" class="list empty">등록된 시험 세트가 없습니다.</div>
+        </section>
+
+        <section class="card span-2">
+            <h2>학생 배정</h2>
+            <form id="assignment-form" class="stack">
+                <div class="inline-grid">
+                    <label>시험 세트
+                        <select name="examId" id="assignment-exam" required></select>
+                    </label>
+                    <label>학생
+                        <select name="studentId" id="assignment-student" required></select>
+                    </label>
+                    <label>마감일시
+                        <input name="dueAt" type="datetime-local">
+                    </label>
+                </div>
+                <button type="submit">학생에게 배정</button>
+            </form>
+        </section>
+
+        <section class="card span-2">
+            <div class="section-head">
+                <h2>학생 목록</h2>
+                <button id="load-students" class="ghost-button" type="button">학생 목록 불러오기</button>
+            </div>
+            <div id="student-list" class="list empty">학생 계정이 없습니다.</div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast" hidden></div>
+</div>
+<script src="/admin.js"></script>
+</body>
+</html>
