@@ -23,17 +23,17 @@ export function ResultPage() {
       <PageShell
         eyebrow="Result Report"
         title="학생 결과 리포트"
-        description="총점, 섹션 점수, 모듈별 소요 시간, 문항별 정오표를 상담과 확인 중심의 결과 화면으로 정리한 페이지입니다."
+        description="총점, 섹션 점수, 모듈별 소요 시간, 문항별 정오표를 상담과 확인 중심의 결과 화면으로 정리했습니다."
         actions={
           <div className="flex flex-wrap gap-2">
             <ButtonLink to="/student" tone="ghost">
-              학생 포털로 돌아가기
+              학생 대시보드로 돌아가기
             </ButtonLink>
           </div>
         }
       >
         {resultQuery.data ? (
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <ResultKpi
               label="Total Score"
               value={String(resultQuery.data.totalScore)}
@@ -64,7 +64,7 @@ export function ResultPage() {
           <section className="grid gap-5 xl:grid-cols-[0.74fr_1.26fr]">
             <Card
               title="시험 결과 요약"
-              description="시험명, 버전, 트랙, 모듈별 정답 수를 요약해 보여주는 결과 카드입니다."
+              description="시험명, 버전, 트랙, 모듈별 정답 수를 한 번에 확인할 수 있는 요약 카드입니다."
             >
               <div className="grid gap-4">
                 <SummaryPanel
@@ -81,20 +81,20 @@ export function ResultPage() {
 
             <Card
               title="결과 해석 포인트"
-              description="1차 MVP 기준에서는 고급 분석 대신 결과를 빠르게 이해할 수 있는 핵심 지표만 정리합니다."
+              description="1차 MVP 범위에서는 고급 분석 대신 결과를 빠르게 이해할 수 있는 핵심 포인트만 정리합니다."
             >
               <div className="grid gap-4 md:grid-cols-3">
                 <InsightCard
                   title="총점 중심"
-                  body="학생과 학부모가 가장 먼저 확인하는 핵심 값은 총점과 섹션 점수입니다."
+                  body="학생과 상담자가 먼저 확인해야 할 값은 총점과 섹션 점수입니다. 현재 위치를 빠르게 파악할 수 있습니다."
                 />
                 <InsightCard
                   title="시간 기록"
-                  body="Module 1과 Module 2 소요 시간을 함께 보여줘 시험 운영과 집중도를 확인할 수 있습니다."
+                  body="Module 1과 Module 2 소요 시간을 함께 보여주어 시험 운영과 집중도를 함께 확인할 수 있습니다."
                 />
                 <InsightCard
                   title="문항별 정오"
-                  body="각 문항의 정답과 학생 답안을 같이 제공해 결과 확인 후 상담 연결이 쉬워집니다."
+                  body="각 문항의 정답과 학생 답안을 나란히 제공해 결과 확인과 상담 연결이 쉬워집니다."
                 />
               </div>
             </Card>
@@ -102,7 +102,7 @@ export function ResultPage() {
 
           <Card
             title="문항별 결과표"
-            description="1차 MVP 범위에 맞춰 모듈, 트랙, 문항 번호, 정답, 학생답, 정오 여부만 명확하게 보여줍니다."
+            description="1차 MVP 범위에 맞춰 모듈, 트랙, 문항 번호, 정답, 학생 답, 정오 여부만 명확하게 보여줍니다."
           >
             <div className="overflow-x-auto">
               <table className="min-w-full border-separate border-spacing-y-2 text-sm">
@@ -113,7 +113,7 @@ export function ResultPage() {
                     <th className="px-4 py-3">No.</th>
                     <th className="px-4 py-3">문제 제목</th>
                     <th className="px-4 py-3">정답</th>
-                    <th className="px-4 py-3">학생답</th>
+                    <th className="px-4 py-3">학생 답</th>
                     <th className="px-4 py-3">채점</th>
                   </tr>
                 </thead>
@@ -162,17 +162,17 @@ export function ResultPage() {
               현재 assignmentId: <strong>{assignmentId ?? "없음"}</strong>
             </div>
           </Card>
-          <Card title="결과 조회 상태" description="결과가 없거나 세션이 만료된 경우에 표시됩니다.">
+          <Card title="결과 조회 상태" description="결과가 없거나 세션이 만료된 경우 이 메시지가 표시됩니다.">
             <div
               className="rounded-[24px] border border-dashed px-4 py-5 text-sm leading-7 text-[var(--color-text-soft)]"
               style={{ borderColor: "var(--color-line-strong)", background: "rgba(255,255,255,0.74)" }}
             >
               {resultQuery.isLoading
                 ? "결과를 불러오는 중입니다."
-                : "결과를 조회하지 못했습니다. 학생 로그인 상태를 다시 확인해주세요."}
+                : "결과를 조회하지 못했습니다. 학생 로그인 상태를 다시 확인해 주세요."}
             </div>
             <div className="mt-4 flex flex-wrap gap-3">
-              <ButtonLink to="/student">학생 포털</ButtonLink>
+              <ButtonLink to="/student">학생 대시보드</ButtonLink>
               <Link to="/login?role=student" className="text-sm font-semibold text-[var(--color-brand-navy)]">
                 다시 로그인하기
               </Link>
@@ -212,7 +212,11 @@ function ResultKpi({
         color: emphasis ? "white" : "var(--color-text)",
       }}
     >
-      <p className={`text-xs font-semibold uppercase tracking-[0.28em] ${emphasis ? "text-white/60" : "text-[var(--color-brand-blue)]"}`}>
+      <p
+        className={`text-xs font-semibold uppercase tracking-[0.28em] ${
+          emphasis ? "text-white/60" : "text-[var(--color-brand-blue)]"
+        }`}
+      >
         {label}
       </p>
       <h3 className="mt-3 text-4xl font-black tracking-tight">{value}</h3>

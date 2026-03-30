@@ -6,7 +6,7 @@ const platformCards = [
   {
     title: "Level Test",
     description:
-      "학생별 현재 실력을 진단하고 Module 1 결과에 따라 다음 모듈을 분기하는 DSAT 레벨테스트 흐름을 제공합니다.",
+      "학생의 현재 실력을 진단하고 Module 1 결과에 따라 다음 모듈을 분기하는 DSAT 레벨테스트 흐름을 제공합니다.",
   },
   {
     title: "Mock Test",
@@ -16,7 +16,7 @@ const platformCards = [
   {
     title: "Result & Tracking",
     description:
-      "총점, 섹션 점수, 모듈별 시간, 문항별 정오표를 기반으로 학생별 학습 상태를 빠르게 확인할 수 있습니다.",
+      "총점, 섹션 점수, 모듈별 소요 시간, 문항별 정오표를 기반으로 학생별 학습 상태를 빠르게 확인할 수 있습니다.",
   },
 ];
 
@@ -24,18 +24,24 @@ const principles = [
   {
     title: "브랜드는 LML, 시스템은 DSAT",
     body:
-      "학원 사이트의 신뢰감과 프리미엄 아카데믹 톤은 유지하되, 실제 사용 영역은 더 정돈된 제품형 UI로 분리합니다.",
+      "학원 사이트의 신뢰감과 프리미엄 톤은 유지하면서도, 실제 사용 화면은 더 정돈된 제품형 UI로 분리했습니다.",
   },
   {
-    title: "학생은 태블릿 우선",
+    title: "학생은 태블릿 경험 우선",
     body:
-      "시험 응시와 결과 확인은 태블릿 사용성을 기준으로 크게 보고, 선택과 이동이 편한 구조로 설계합니다.",
+      "시험 응시와 결과 확인은 태블릿 사용성을 기준으로 크게 보고, 선택과 이동이 편한 구조로 설계했습니다.",
   },
   {
     title: "관리자는 운영 효율 우선",
     body:
-      "문제 등록, 시험 생성, 학생 배정처럼 반복되는 업무는 한 흐름 안에서 빠르게 처리할 수 있도록 구성합니다.",
+      "문제 등록, 시험 생성, 학생 배정처럼 반복되는 업무를 한 흐름 안에서 빠르게 처리할 수 있도록 구성했습니다.",
   },
+];
+
+const portalFacts = [
+  ["브랜드", "LML Learning Management Lab"],
+  ["시스템", "DSAT Digital SAT LMS"],
+  ["사용 환경", "PC 관리자 / 태블릿 학생"],
 ];
 
 export function HomePage() {
@@ -79,11 +85,7 @@ export function HomePage() {
             </div>
 
             <div className="grid gap-3 pt-2 md:grid-cols-3">
-              {[
-                ["브랜드", "LML Learning Management Lab"],
-                ["시스템", "DSAT Digital SAT LMS"],
-                ["사용 환경", "PC 관리자 / 태블릿 학생"],
-              ].map(([label, value]) => (
+              {portalFacts.map(([label, value]) => (
                 <div
                   key={label}
                   className="rounded-[24px] border px-4 py-4"
@@ -107,8 +109,8 @@ export function HomePage() {
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/60">Focus</p>
               <h3 className="mt-3 text-2xl font-black">본질에 집중한 학습 운영</h3>
               <p className="mt-3 text-sm leading-7 text-white/76">
-                레벨테스트, 모의고사, 자동 채점, 결과 확인을 한 흐름으로 연결해 학생별 진행 상황을 더
-                명확하게 볼 수 있도록 설계합니다.
+                레벨테스트, 모의고사, 자동 채점, 결과 확인까지 한 흐름으로 연결해 학생별 진행 상황을
+                명확하게 볼 수 있도록 설계했습니다.
               </p>
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
@@ -146,8 +148,8 @@ export function HomePage() {
         </Card>
 
         <Card
-          title="이 포털의 디자인 방향"
-          description="학원 사이트 감성을 유지하면서도 실제 제품처럼 사용하기 쉬운 구조를 지향합니다."
+          title="이 포털의 사용자 경험 방향"
+          description="학원 사이트 감성은 유지하면서도 실제 제품처럼 사용하기 쉬운 구조를 지향합니다."
         >
           <div className="space-y-4">
             {principles.map((item) => (
@@ -182,7 +184,7 @@ export function HomePage() {
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-[var(--color-ink)] md:text-4xl">
               학생과 운영자가 같은 브랜드 경험 안에서
-              <span className="block text-[var(--color-brand-navy)]">각자 다른 화면으로 진입합니다.</span>
+              <span className="block text-[var(--color-brand-navy)]">각자 다른 화면으로 진입합니다</span>
             </h2>
           </div>
           <div className="flex flex-wrap gap-3">
