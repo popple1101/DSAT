@@ -3,8 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { authApi } from "../features/auth/api";
 import { storage } from "../lib/storage";
-import { BrandMark } from "../shared/BrandMark";
-import { ButtonLink } from "../shared/ButtonLink";
 
 export function SignupPage() {
   const navigate = useNavigate();
@@ -27,68 +25,23 @@ export function SignupPage() {
   });
 
   return (
-    <section className="grid min-h-[calc(100vh-140px)] gap-5 lg:grid-cols-[0.88fr_1.12fr]">
+    <section className="mx-auto grid min-h-[calc(100vh-140px)] max-w-[760px] content-center">
       <div
-        className="order-2 rounded-[34px] border px-5 py-6 shadow-[var(--shadow-soft)] lg:order-1 lg:px-6 lg:py-7"
+        className="rounded-[34px] border px-6 py-8 shadow-[var(--shadow-soft)]"
         style={{
           borderColor: "var(--color-line)",
           background:
-            "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(247,249,253,0.92) 58%, rgba(251,247,239,0.82))",
+            "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(247,249,253,0.94) 58%, rgba(251,247,239,0.84))",
         }}
       >
-        <div className="flex h-full flex-col justify-between gap-6">
-          <BrandMark />
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-brand-blue)]">
-              Signup
-            </p>
-            <h1 className="text-3xl font-black leading-tight tracking-tight text-[var(--color-ink)] md:text-4xl xl:text-5xl">
-              학생 계정을 먼저 만들고
-              <span className="block text-[var(--color-brand-navy)]">DSAT 포털에 입장합니다.</span>
-            </h1>
-            <p className="max-w-xl text-sm leading-7 text-[var(--color-text-soft)] md:text-base">
-              1차 MVP에서는 signup code 없이 학생이 직접 회원가입할 수 있도록 단순화했습니다. 이후 운영
-              정책이 바뀌면 코드 기반 가입 구조로 확장할 수 있습니다.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            {[
-              "학생 이름, 로그인 아이디, 비밀번호만으로 빠르게 계정 생성",
-              "가입 후 바로 학생 포털로 이동",
-              "배정된 시험이 있으면 즉시 응시 가능",
-            ].map((line) => (
-              <div
-                key={line}
-                className="rounded-[22px] border px-4 py-4 text-sm leading-7 text-[var(--color-text)]"
-                style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.72)" }}
-              >
-                {line}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="order-1 rounded-[34px] border px-5 py-6 shadow-[var(--shadow-soft)] lg:order-2 lg:px-6 lg:py-7"
-        style={{
-          borderColor: "var(--color-line)",
-          background:
-            "linear-gradient(145deg, rgba(16,38,79,0.96), rgba(23,53,111,0.92) 48%, rgba(183,122,60,0.88) 120%)",
-        }}
-      >
-        <div className="mx-auto flex h-full max-w-xl flex-col justify-center gap-5 text-white">
-          <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/62">Create account</p>
-            <h2 className="text-3xl font-black tracking-tight md:text-4xl">LML DSAT Student Signup</h2>
-            <p className="text-sm leading-7 text-white/76">
-              학생 포털 회원가입은 가볍게 시작하고, 실제 시험 운영은 배정 이후 학생 대시보드에서 이어집니다.
-            </p>
+        <div className="mx-auto grid max-w-[420px] gap-5">
+          <div>
+            <h1 className="text-3xl font-black text-[var(--color-ink)]">Sign up</h1>
+            <p className="mt-1 text-sm text-[var(--color-text-soft)]">please enter all information</p>
           </div>
 
           {message ? (
-            <div className="rounded-[24px] border border-white/20 bg-white/10 px-4 py-3 text-sm text-white">
+            <div className="rounded-[20px] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
               {message}
             </div>
           ) : null}
@@ -100,7 +53,7 @@ export function SignupPage() {
               setMessage("");
 
               if (form.password !== form.confirmPassword) {
-                setMessage("비밀번호 확인이 일치하지 않습니다.");
+                setMessage("비밀번호가 일치하지 않습니다.");
                 return;
               }
 
@@ -111,53 +64,50 @@ export function SignupPage() {
               });
             }}
           >
-            <Field label="학생 이름">
+            <Field label="Name">
               <input
-                className="rounded-[22px] border border-white/16 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-white/45 focus:border-white/34"
+                className={inputClass}
+                placeholder="Name"
                 value={form.name}
                 onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
-                placeholder="김학생"
               />
             </Field>
-            <Field label="로그인 아이디">
+            <Field label="ID">
               <input
-                className="rounded-[22px] border border-white/16 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-white/45 focus:border-white/34"
+                className={inputClass}
+                placeholder="ID"
                 value={form.loginId}
                 onChange={(event) => setForm((prev) => ({ ...prev, loginId: event.target.value }))}
-                placeholder="student01"
               />
             </Field>
-            <Field label="비밀번호">
+            <Field label="Password">
               <input
-                className="rounded-[22px] border border-white/16 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-white/45 focus:border-white/34"
+                className={inputClass}
                 type="password"
+                placeholder="Password"
                 value={form.password}
                 onChange={(event) => setForm((prev) => ({ ...prev, password: event.target.value }))}
               />
             </Field>
-            <Field label="비밀번호 확인">
+            <Field label="Confirm Password">
               <input
-                className="rounded-[22px] border border-white/16 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-white/45 focus:border-white/34"
+                className={inputClass}
                 type="password"
+                placeholder="Confirm Password"
                 value={form.confirmPassword}
                 onChange={(event) => setForm((prev) => ({ ...prev, confirmPassword: event.target.value }))}
               />
             </Field>
-            <button
-              className="rounded-full bg-white px-5 py-3 text-sm font-bold text-[var(--color-brand-navy)] transition hover:bg-[var(--color-brand-cream)]"
-              type="submit"
-            >
-              {signupMutation.isPending ? "가입 처리 중..." : "학생 계정 만들기"}
+            <button className={primaryButtonClass} type="submit">
+              {signupMutation.isPending ? "Loading..." : "Next"}
             </button>
           </form>
 
-          <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
-            <Link to="/login?role=student" className="text-sm font-semibold text-white">
-              이미 계정이 있다면 로그인
+          <div className="grid gap-2 text-sm font-semibold text-[var(--color-brand-navy)]">
+            <Link to="/login?role=student">
+              Already have an account? <span className="font-black">Login</span>
             </Link>
-            <ButtonLink to="/" tone="ghost">
-              홈으로 이동
-            </ButtonLink>
+            <Link to="/">Back</Link>
           </div>
         </div>
       </div>
@@ -167,9 +117,15 @@ export function SignupPage() {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="grid gap-2 text-sm font-semibold text-white">
+    <label className="grid gap-2 text-sm font-semibold text-[var(--color-text)]">
       <span>{label}</span>
       {children}
     </label>
   );
 }
+
+const inputClass =
+  "rounded-[12px] border border-[var(--color-line)] bg-white px-4 py-3 text-[var(--color-ink)] outline-none transition focus:border-[var(--color-brand-blue)]";
+
+const primaryButtonClass =
+  "rounded-[12px] bg-[var(--color-brand-gold-soft)] px-5 py-3 text-base font-bold text-[var(--color-brand-navy)] transition hover:brightness-95";

@@ -9,9 +9,9 @@ type ButtonLinkProps = PropsWithChildren<{
 
 const toneClassMap = {
   primary:
-    "bg-[var(--color-brand-navy)] text-white shadow-[0_18px_44px_rgba(20,42,90,0.18)] hover:bg-[var(--color-brand-navy-strong)]",
+    "bg-[var(--color-brand-gold-soft)] text-[var(--color-brand-navy)] shadow-[0_18px_44px_rgba(20,42,90,0.12)] hover:brightness-95",
   secondary:
-    "bg-[var(--color-brand-cream)] text-[var(--color-brand-navy)] ring-1 ring-[var(--color-line-strong)] hover:bg-white",
+    "bg-[var(--color-brand-navy)] text-white hover:bg-[var(--color-brand-navy-strong)]",
   ghost:
     "bg-white/70 text-[var(--color-brand-navy)] ring-1 ring-[var(--color-line)] hover:bg-white",
 };

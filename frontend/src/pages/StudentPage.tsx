@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Card } from "../shared/Card";
-import { PageShell } from "../shared/PageShell";
 import { storage } from "../lib/storage";
 import { studentApi } from "../features/student/api";
 import type { AuthResponse } from "../features/auth/types";
-import type { StudentAssignment, StudentExamDetail } from "../features/student/types";
+import type { StudentExamDetail } from "../features/student/types";
 
 export function StudentPage() {
   const navigate = useNavigate();
@@ -38,16 +36,21 @@ export function StudentPage() {
     }
   }, [navigate, studentInfo, token]);
 
-  const detailState = useMemo(
-    () => detailOverride ?? detailQuery.data ?? null,
-    [detailOverride, detailQuery.data]
+  const detailState = useMemo(() => detailOverride ?? detailQuery.data ?? null, [detailOverride, detailQuery.data]);
+
+  const activeAssignment = useMemo(
+    () =>
+      assignmentsQuery.data?.find((assignment) => assignment.assignmentId === currentAssignmentId) ??
+      assignmentsQuery.data?.[0] ??
+      null,
+    [assignmentsQuery.data, currentAssignmentId]
   );
 
   const startModule1Mutation = useMutation({
     mutationFn: () => studentApi.startModule1(token, currentAssignmentId!),
     onSuccess: (data) => {
       setDetailOverride(data);
-      setMessage("Module 1을 시작했습니다.");
+      setMessage("Module 1 시작");
       void detailQuery.refetch();
     },
     onError: (error) => setMessage(error.message),
@@ -57,7 +60,7 @@ export function StudentPage() {
     mutationFn: () => studentApi.startModule2(token, currentAssignmentId!),
     onSuccess: (data) => {
       setDetailOverride(data);
-      setMessage("Module 2를 시작했습니다.");
+      setMessage("Module 2 시작");
       void detailQuery.refetch();
     },
     onError: (error) => setMessage(error.message),
@@ -80,12 +83,12 @@ export function StudentPage() {
     },
     onSuccess: async ({ type, result }) => {
       if (type === "module1") {
-        setMessage(`Module 1 제출 완료. 다음 트랙은 ${result.routeType}입니다.`);
+        setMessage(`Module 1 제출 / ${result.routeType}`);
         await detailQuery.refetch();
         return;
       }
 
-      setMessage("최종 제출이 완료되었습니다. 결과표로 이동합니다.");
+      setMessage("최종 제출");
       await assignmentsQuery.refetch();
       navigate(`/result/${currentAssignmentId}`);
     },
@@ -101,7 +104,7 @@ export function StudentPage() {
       selectedAnswer: "A" | "B" | "C" | "D";
     }) => {
       if (!detailState || !currentAssignmentId) {
-        throw new Error("먼저 시험을 선택해주세요.");
+        throw new Error("시험을 먼저 선택해 주세요.");
       }
 
       return studentApi.saveAnswer(token, currentAssignmentId, {
@@ -113,460 +116,282 @@ export function StudentPage() {
     },
     onSuccess: (data) => {
       setDetailOverride(data);
-      setMessage("답안을 저장했습니다.");
+      setMessage("답안 저장");
     },
     onError: (error) => setMessage(error.message),
   });
 
-  const activeAssignment = useMemo(
-    () =>
-      assignmentsQuery.data?.find((assignment) => assignment.assignmentId === currentAssignmentId) ??
-      assignmentsQuery.data?.[0] ??
-      null,
-    [assignmentsQuery.data, currentAssignmentId]
-  );
-
-  const summaryCards = buildSummaryCards(assignmentsQuery.data ?? [], detailState);
-
   return (
     <div className="space-y-5">
-      <PageShell
-        eyebrow="Student Portal"
-        title={studentInfo ? `${studentInfo.name} 학생 포털` : "학생 DSAT 포털"}
-        description="배정된 시험을 확인하고 현재 진행 상태를 한눈에 파악한 뒤, 태블릿에 최적화된 시험 화면으로 바로 이어지는 학생 대시보드입니다."
-        actions={
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="rounded-full bg-[var(--color-brand-navy)] px-4 py-2 text-sm font-semibold text-white"
-              onClick={() => void assignmentsQuery.refetch()}
-            >
-              시험 새로고침
-            </button>
-          </div>
-        }
+      <section
+        className="rounded-[34px] border px-5 py-6 shadow-[var(--shadow-soft)]"
+        style={{
+          borderColor: "var(--color-line)",
+          background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247,249,253,0.92))",
+        }}
       >
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {summaryCards.map((card) => (
-            <div
-              key={card.label}
-              className="rounded-[26px] border px-5 py-5 shadow-[var(--shadow-soft)]"
-              style={{
-                borderColor: "var(--color-line)",
-                background: card.emphasis
-                  ? "linear-gradient(135deg, rgba(23,53,111,0.98), rgba(45,91,223,0.92) 100%)"
-                  : "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,249,253,0.9))",
-                color: card.emphasis ? "white" : "var(--color-text)",
-              }}
-            >
-              <p
-                className={`text-xs font-semibold uppercase tracking-[0.28em] ${
-                  card.emphasis ? "text-white/68" : "text-[var(--color-brand-blue)]"
-                }`}
-              >
-                {card.label}
-              </p>
-              <h3 className="mt-3 text-3xl font-black tracking-tight">{card.value}</h3>
-              <p className={`mt-3 text-sm leading-7 ${card.emphasis ? "text-white/74" : "text-[var(--color-text-soft)]"}`}>
-                {card.description}
-              </p>
-            </div>
-          ))}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-brand-blue)]">
+              Student
+            </p>
+            <h1 className="mt-2 text-3xl font-black text-[var(--color-ink)]">
+              {studentInfo ? `${studentInfo.name} 학생 포털` : "학생 포털"}
+            </h1>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button className={primaryButtonClass} type="button" onClick={() => void assignmentsQuery.refetch()}>
+              새로고침
+            </button>
+            {detailState ? (
+              <button className={secondaryButtonClass} type="button" onClick={() => navigate(`/result/${detailState.assignmentId}`)}>
+                결과 보기
+              </button>
+            ) : null}
+          </div>
         </div>
-      </PageShell>
+      </section>
 
       {message ? (
-        <div className="rounded-[24px] border border-[var(--color-line)] bg-white/90 px-4 py-3 text-sm font-medium text-[var(--color-text)] shadow-sm">
+        <div className="rounded-[20px] border border-[var(--color-line)] bg-white px-4 py-3 text-sm font-semibold text-[var(--color-text)]">
           {message}
         </div>
       ) : null}
 
-      <section className="grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
-        <Card
-          title="배정된 시험"
-          description="학생에게 배정된 시험 목록과 현재 상태를 빠르게 확인할 수 있습니다."
-        >
+      <section className="grid gap-5 xl:grid-cols-[0.88fr_1.12fr]">
+        <Panel title="배정 시험">
           <div className="grid gap-3">
             {assignmentsQuery.data?.length ? (
               assignmentsQuery.data.map((assignment) => (
-                <AssignmentButton
+                <button
                   key={assignment.assignmentId}
-                  assignment={assignment}
-                  active={
-                    currentAssignmentId === assignment.assignmentId ||
-                    (!currentAssignmentId && activeAssignment?.assignmentId === assignment.assignmentId)
-                  }
+                  type="button"
+                  className={`rounded-[24px] border px-4 py-4 text-left transition ${
+                    activeAssignment?.assignmentId === assignment.assignmentId
+                      ? "bg-[var(--color-brand-navy)] text-white"
+                      : "bg-white text-[var(--color-text)]"
+                  }`}
+                  style={{
+                    borderColor:
+                      activeAssignment?.assignmentId === assignment.assignmentId ? "transparent" : "var(--color-line)",
+                  }}
                   onClick={() => setCurrentAssignmentId(assignment.assignmentId)}
-                />
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-lg font-black">
+                        {assignment.examTitle} ({assignment.versionName})
+                      </p>
+                      <p
+                        className={`mt-2 text-sm ${
+                          activeAssignment?.assignmentId === assignment.assignmentId
+                            ? "text-white/72"
+                            : "text-[var(--color-text-soft)]"
+                        }`}
+                      >
+                        {assignment.submissionStatus}
+                      </p>
+                    </div>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-bold ${
+                        assignment.routeType
+                          ? "bg-white/14 text-white"
+                          : "bg-[var(--color-brand-cream)] text-[var(--color-brand-navy)]"
+                      }`}
+                    >
+                      {assignment.routeType ?? "대기"}
+                    </span>
+                  </div>
+                </button>
               ))
             ) : (
               <EmptyState message="배정된 시험이 없습니다." />
             )}
           </div>
-        </Card>
+        </Panel>
 
-        <Card
-          title="현재 시험 상태"
-          description="선택한 시험의 현재 모듈, 트랙, 소요 시간과 빠른 액션을 한 번에 제공합니다."
-        >
+        <Panel title="시험">
           {detailState ? (
             <div className="grid gap-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <StatusPanel
-                  title={`${detailState.examTitle} (${detailState.versionName})`}
-                  lines={[
-                    `제출 상태: ${detailState.submissionStatus}`,
-                    `현재 모듈: ${detailState.currentModuleType}`,
-                    `현재 트랙: ${detailState.currentRouteType}`,
-                  ]}
-                />
-                <StatusPanel
-                  title="모듈 기록"
-                  lines={[
-                    `Module 1 소요시간: ${formatSeconds(detailState.module1DurationSeconds ?? 0)}`,
-                    `Module 2 소요시간: ${formatSeconds(detailState.module2DurationSeconds ?? 0)}`,
-                    `현재 문항 수: ${detailState.questions.length}`,
-                  ]}
-                />
+              <div className="grid gap-3 sm:grid-cols-3">
+                <StatCard label="상태" value={detailState.submissionStatus} />
+                <StatCard label="모듈" value={detailState.currentModuleType} />
+                <StatCard label="트랙" value={detailState.currentRouteType} />
               </div>
-              <div className="grid gap-2 sm:grid-cols-3">
-                <ActionButton
-                  label="Module 1 시작"
-                  onClick={() => startModule1Mutation.mutate()}
-                  disabled={!activeAssignment}
-                />
-                <ActionButton
-                  label="Module 2 시작"
-                  onClick={() => startModule2Mutation.mutate()}
-                  disabled={!activeAssignment}
-                  tone="secondary"
-                />
-                <ActionButton
-                  label={detailState.currentModuleType === "MODULE_1" ? "현재 모듈 제출" : "최종 제출"}
-                  onClick={() => submitModuleMutation.mutate()}
-                  disabled={!detailState}
-                  tone="primary"
-                />
+              <div className="grid gap-3 sm:grid-cols-3">
+                <button type="button" className={primaryButtonClass} onClick={() => startModule1Mutation.mutate()}>
+                  Module 1 시작
+                </button>
+                <button type="button" className={secondaryButtonClass} onClick={() => startModule2Mutation.mutate()}>
+                  Module 2 시작
+                </button>
+                <button type="button" className={ghostButtonClass} onClick={() => submitModuleMutation.mutate()}>
+                  {detailState.currentModuleType === "MODULE_1" ? "Module 1 제출" : "최종 제출"}
+                </button>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {detailState.questions.map((question) => (
+                  <button
+                    key={question.questionId}
+                    type="button"
+                    className="rounded-[20px] border bg-white px-4 py-3 text-left"
+                    style={{
+                      borderColor: question.selectedAnswer ? "rgba(16,185,129,0.34)" : "var(--color-line)",
+                    }}
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-brand-blue)]">
+                      Q{question.questionOrder}
+                    </p>
+                    <p className="mt-2 line-clamp-2 text-sm font-bold text-[var(--color-ink)]">{question.title}</p>
+                    <p className="mt-2 text-xs text-[var(--color-text-soft)]">
+                      {question.selectedAnswer ? `선택 ${question.selectedAnswer}` : "미응답"}
+                    </p>
+                  </button>
+                ))}
               </div>
             </div>
           ) : (
-            <EmptyState message="시험을 선택하면 현재 모듈과 진행 상태가 표시됩니다." />
+            <EmptyState message="시험을 선택해 주세요." />
           )}
-        </Card>
+        </Panel>
       </section>
 
-      <Card
-        title="시험 응시 화면"
-        description="지문, 자료, 질문, 선택지를 집중형 레이아웃으로 분리해 태블릿에서 바로 응시할 수 있는 화면 구조로 정리했습니다."
-      >
+      <Panel title="응시">
         {detailState?.questions.length ? (
-          <div className="space-y-5">
-            <div
-              className="rounded-[28px] border px-4 py-5 shadow-sm md:px-5"
-              style={{
-                borderColor: "var(--color-line)",
-                background:
-                  "linear-gradient(135deg, rgba(16,38,79,0.98), rgba(23,53,111,0.92) 60%, rgba(45,91,223,0.88))",
-              }}
-            >
-              <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                <div className="text-white">
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/56">Exam Mode</p>
-                  <h3 className="mt-2 text-2xl font-black tracking-tight">
-                    {detailState.examTitle} / {detailState.currentModuleType}
+          <div className="grid gap-4">
+            {detailState.questions.map((question) => (
+              <article
+                key={question.questionId}
+                className="grid gap-4 rounded-[26px] border px-4 py-4 md:px-5 md:py-5 lg:grid-cols-[1.08fr_0.92fr]"
+                style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.92)" }}
+              >
+                <div className="space-y-4">
+                  <h3 className="text-xl font-black text-[var(--color-ink)]">
+                    {question.questionOrder}. {question.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-7 text-white/74">
-                    현재 트랙은 {detailState.currentRouteType}이며, 선택한 답안은 즉시 저장됩니다.
-                  </p>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <ExamStat label="현재 문항" value={`${detailState.questions.length}개`} />
-                  <ExamStat label="Module 1 시간" value={formatSeconds(detailState.module1DurationSeconds ?? 0)} />
-                  <ExamStat label="Module 2 시간" value={formatSeconds(detailState.module2DurationSeconds ?? 0)} />
-                </div>
-              </div>
-            </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              {detailState.questions.map((question) => (
-                <button
-                  key={`nav-${question.questionId}`}
-                  type="button"
-                  className="rounded-[20px] border px-4 py-3 text-left transition hover:-translate-y-0.5"
-                  style={{
-                    borderColor: question.selectedAnswer ? "rgba(16,185,129,0.34)" : "var(--color-line)",
-                    background: question.selectedAnswer
-                      ? "linear-gradient(180deg, rgba(236,253,245,0.95), rgba(209,250,229,0.88))"
-                      : "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,249,253,0.88))",
-                  }}
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-brand-blue)]">
-                    Q{question.questionOrder}
-                  </p>
-                  <p className="mt-2 line-clamp-2 text-sm font-semibold leading-6 text-[var(--color-text)]">
-                    {question.title}
-                  </p>
-                  <p className="mt-2 text-xs text-[var(--color-text-soft)]">
-                    {question.selectedAnswer ? `선택 완료: ${question.selectedAnswer}` : "미응답"}
-                  </p>
-                </button>
-              ))}
-            </div>
-
-            <div className="grid gap-4">
-              {detailState.questions.map((question) => (
-                <article
-                  key={question.questionId}
-                  className="grid gap-4 rounded-[28px] border px-4 py-4 shadow-sm md:px-5 md:py-5 lg:grid-cols-[1.08fr_0.92fr]"
-                  style={{
-                    borderColor: "var(--color-line)",
-                    background: "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,249,253,0.88))",
-                  }}
-                >
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">
-                        {detailState.currentModuleType} / {detailState.currentRouteType}
-                      </p>
-                      <h4 className="mt-2 text-lg font-black tracking-tight text-[var(--color-ink)] md:text-xl">
-                        {question.questionOrder}. {question.title}
-                      </h4>
-                    </div>
-
-                    {question.passageText ? (
-                      <div
-                        className="rounded-[20px] border px-4 py-4 text-sm leading-7 whitespace-pre-wrap"
-                        style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.82)" }}
-                      >
-                        {question.passageText}
-                      </div>
-                    ) : null}
-
-                    {question.assetImagePath ? (
-                      <div
-                        className="rounded-[20px] border border-dashed px-4 py-8 text-center text-sm text-[var(--color-text-soft)]"
-                        style={{ borderColor: "var(--color-line-strong)", background: "rgba(255,255,255,0.72)" }}
-                      >
-                        자료 이미지 경로: {question.assetImagePath}
-                      </div>
-                    ) : null}
-
-                    <section
-                      className="rounded-[22px] border px-4 py-4"
-                      style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.84)" }}
-                    >
-                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">
-                        Question
-                      </p>
-                      <div className="mt-3 text-sm font-semibold leading-7 text-[var(--color-ink)]">
-                        {question.questionText}
-                      </div>
-                    </section>
-                  </div>
-
-                  <div className="grid gap-3 self-start">
+                  {question.passageText ? (
                     <div
-                      className="rounded-[22px] border px-4 py-4"
-                      style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.82)" }}
+                      className="rounded-[20px] border px-4 py-4 text-sm leading-7 whitespace-pre-wrap"
+                      style={{ borderColor: "var(--color-line)", background: "rgba(247,249,253,0.9)" }}
                     >
-                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">
-                        Choices
-                      </p>
-                      <p className="mt-2 text-sm leading-6 text-[var(--color-text-soft)]">
-                        정답을 고르면 자동 저장됩니다.
-                      </p>
+                      {question.passageText}
                     </div>
-                    {(
-                      [
-                        ["A", question.choiceA],
-                        ["B", question.choiceB],
-                        ["C", question.choiceC],
-                        ["D", question.choiceD],
-                      ] as const
-                    ).map(([choice, text]) => {
-                      const active = question.selectedAnswer === choice;
-                      return (
-                        <button
-                          key={choice}
-                          type="button"
-                          className={`rounded-[20px] border px-4 py-4 text-left text-sm font-semibold transition md:text-base ${
-                            active
-                              ? "border-emerald-300 bg-emerald-50 text-emerald-900"
-                              : "bg-white text-[var(--color-text)] hover:bg-slate-50"
-                          }`}
-                          style={{
-                            borderColor: active ? undefined : "var(--color-line)",
-                          }}
-                          onClick={() =>
-                            answerMutation.mutate({
-                              questionId: question.questionId,
-                              selectedAnswer: choice,
-                            })
-                          }
-                        >
-                          <span
-                            className={`mr-3 inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-black ${
-                              active
-                                ? "bg-emerald-100 text-emerald-900"
-                                : "bg-[var(--color-brand-cream)] text-[var(--color-brand-navy)]"
-                            }`}
-                          >
-                            {choice}
-                          </span>
-                          {text}
-                        </button>
-                      );
-                    })}
+                  ) : null}
+
+                  {question.assetImagePath ? (
+                    <div
+                      className="rounded-[20px] border border-dashed px-4 py-6 text-center text-sm text-[var(--color-text-soft)]"
+                      style={{ borderColor: "var(--color-line-strong)", background: "rgba(247,249,253,0.86)" }}
+                    >
+                      {question.assetImagePath}
+                    </div>
+                  ) : null}
+
+                  <div
+                    className="rounded-[20px] border px-4 py-4 text-sm font-semibold leading-7 text-[var(--color-ink)]"
+                    style={{ borderColor: "var(--color-line)", background: "rgba(255,255,255,0.94)" }}
+                  >
+                    {question.questionText}
                   </div>
-                </article>
-              ))}
-            </div>
+                </div>
+
+                <div className="grid gap-3 self-start">
+                  {(
+                    [
+                      ["A", question.choiceA],
+                      ["B", question.choiceB],
+                      ["C", question.choiceC],
+                      ["D", question.choiceD],
+                    ] as const
+                  ).map(([choice, text]) => {
+                    const active = question.selectedAnswer === choice;
+                    return (
+                      <button
+                        key={choice}
+                        type="button"
+                        className={`rounded-[20px] border px-4 py-4 text-left text-base font-semibold transition ${
+                          active
+                            ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+                            : "bg-white text-[var(--color-text)]"
+                        }`}
+                        style={{ borderColor: active ? undefined : "var(--color-line)" }}
+                        onClick={() =>
+                          answerMutation.mutate({
+                            questionId: question.questionId,
+                            selectedAnswer: choice,
+                          })
+                        }
+                      >
+                        <span
+                          className={`mr-3 inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-black ${
+                            active
+                              ? "bg-emerald-100 text-emerald-900"
+                              : "bg-[var(--color-brand-cream)] text-[var(--color-brand-navy)]"
+                          }`}
+                        >
+                          {choice}
+                        </span>
+                        {text}
+                      </button>
+                    );
+                  })}
+                </div>
+              </article>
+            ))}
           </div>
         ) : (
-          <EmptyState message="시험을 선택하고 모듈을 시작하면 여기에 문항이 표시됩니다." />
+          <EmptyState message="시작한 시험이 없습니다." />
         )}
-      </Card>
+      </Panel>
     </div>
   );
-}
-
-function buildSummaryCards(assignments: StudentAssignment[], detailState: StudentExamDetail | null) {
-  return [
-    {
-      label: "배정된 시험",
-      value: `${assignments.length}개`,
-      description: "학생 계정에 현재 연결된 시험 개수입니다.",
-      emphasis: false,
-    },
-    {
-      label: "진행 상태",
-      value: detailState?.submissionStatus ?? "대기 중",
-      description: detailState
-        ? `${detailState.currentModuleType} / ${detailState.currentRouteType} 기준으로 진행 중입니다.`
-        : "시험을 선택하면 현재 상태가 표시됩니다.",
-      emphasis: true,
-    },
-    {
-      label: "현재 트랙",
-      value: detailState?.currentRouteType ?? "미정",
-      description: "Module 1 제출 이후 Upper 또는 Lower 분기가 결정됩니다.",
-      emphasis: false,
-    },
-  ];
 }
 
 function estimateDuration(moduleType: "MODULE_1" | "MODULE_2") {
   return moduleType === "MODULE_1" ? 32 * 60 : 31 * 60;
 }
 
-function formatSeconds(seconds: number) {
-  const minutes = Math.floor(seconds / 60);
-  const remain = seconds % 60;
-  return `${minutes}분 ${remain}초`;
-}
-
-function AssignmentButton({
-  assignment,
-  active,
-  onClick,
-}: {
-  assignment: StudentAssignment;
-  active: boolean;
-  onClick: () => void;
-}) {
+function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <button
-      type="button"
-      className={`rounded-[24px] border px-4 py-4 text-left transition ${
-        active ? "text-white shadow-[var(--shadow-brand)]" : "bg-white text-[var(--color-text)] hover:bg-slate-50"
-      }`}
-      style={{
-        borderColor: active ? "transparent" : "var(--color-line)",
-        background: active
-          ? "linear-gradient(135deg, rgba(23,53,111,0.98), rgba(45,91,223,0.9))"
-          : "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,249,253,0.88))",
-      }}
-      onClick={onClick}
-    >
-      <p className="font-bold">
-        {assignment.examTitle} ({assignment.versionName})
-      </p>
-      <p className={`mt-2 text-sm leading-6 ${active ? "text-white/72" : "text-[var(--color-text-soft)]"}`}>
-        상태: {assignment.submissionStatus}
-      </p>
-      <p className={`text-sm leading-6 ${active ? "text-white/72" : "text-[var(--color-text-soft)]"}`}>
-        트랙: {assignment.routeType || "대기"}
-      </p>
-    </button>
-  );
-}
-
-function StatusPanel({ title, lines }: { title: string; lines: string[] }) {
-  return (
-    <div
-      className="rounded-[24px] border px-5 py-5"
+    <section
+      className="rounded-[30px] border p-5 shadow-[var(--shadow-soft)]"
       style={{
         borderColor: "var(--color-line)",
-        background: "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,249,253,0.88))",
+        background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247,249,253,0.9))",
       }}
     >
-      <h4 className="text-lg font-extrabold text-[var(--color-ink)]">{title}</h4>
-      <div className="mt-3 space-y-2 text-sm leading-7 text-[var(--color-text-soft)]">
-        {lines.map((line) => (
-          <p key={line}>{line}</p>
-        ))}
-      </div>
-    </div>
+      <h2 className="mb-4 text-xl font-black text-[var(--color-ink)]">{title}</h2>
+      {children}
+    </section>
   );
 }
 
-function ExamStat({ label, value }: { label: string; value: string }) {
+function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div
-      className="rounded-[20px] border px-4 py-4 text-white"
-      style={{ borderColor: "rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.08)" }}
-    >
-      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-white/58">{label}</p>
-      <p className="mt-2 text-lg font-black">{value}</p>
+    <div className="rounded-[20px] border bg-white px-4 py-4" style={{ borderColor: "var(--color-line)" }}>
+      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brand-blue)]">{label}</p>
+      <p className="mt-2 text-lg font-black text-[var(--color-ink)]">{value}</p>
     </div>
-  );
-}
-
-function ActionButton({
-  label,
-  onClick,
-  disabled,
-  tone = "ghost",
-}: {
-  label: string;
-  onClick: () => void;
-  disabled?: boolean;
-  tone?: "primary" | "secondary" | "ghost";
-}) {
-  const baseClass =
-    "rounded-full px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-45";
-
-  const toneClass =
-    tone === "primary"
-      ? "bg-[var(--color-brand-navy)] text-white hover:bg-[var(--color-brand-navy-strong)]"
-      : tone === "secondary"
-        ? "bg-[var(--color-brand-cream)] text-[var(--color-brand-navy)] ring-1 ring-[var(--color-line-strong)] hover:bg-white"
-        : "bg-white text-[var(--color-brand-navy)] ring-1 ring-[var(--color-line)] hover:bg-[var(--color-brand-cream)]";
-
-  return (
-    <button type="button" className={`${baseClass} ${toneClass}`} onClick={onClick} disabled={disabled}>
-      {label}
-    </button>
   );
 }
 
 function EmptyState({ message }: { message: string }) {
   return (
     <div
-      className="rounded-[24px] border border-dashed px-4 py-6 text-sm text-[var(--color-text-soft)]"
-      style={{ borderColor: "var(--color-line-strong)", background: "rgba(255,255,255,0.74)" }}
+      className="rounded-[20px] border border-dashed px-4 py-6 text-sm text-[var(--color-text-soft)]"
+      style={{ borderColor: "var(--color-line-strong)", background: "rgba(255,255,255,0.78)" }}
     >
       {message}
     </div>
   );
 }
+
+const primaryButtonClass =
+  "rounded-[20px] bg-[var(--color-brand-navy)] px-5 py-3 text-sm font-bold text-white transition hover:bg-[var(--color-brand-navy-strong)]";
+
+const secondaryButtonClass =
+  "rounded-[20px] bg-[var(--color-brand-cream)] px-5 py-3 text-sm font-bold text-[var(--color-brand-navy)] transition hover:bg-white";
+
+const ghostButtonClass =
+  "rounded-[20px] bg-white px-5 py-3 text-sm font-bold text-[var(--color-brand-navy)] ring-1 ring-[var(--color-line)] transition hover:bg-[var(--color-brand-cream)]";
